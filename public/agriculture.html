@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agriculture & Food Supply Monitoring | Smart City Dashboard</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .crop-yield {
+            width: 100%;
+            height: 20px;
+            background: #ecf0f1;
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 5px 0;
+        }
+
+        .yield-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #27ae60, #2ecc71);
+        }
+
+        .water-drop {
+            color: #3498db;
+            font-size: 1.2rem;
+        }
+
+        .food-icon {
+            color: #f39c12;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/" style="cursor: pointer;">
+                🏙️ Smart City Intelligence
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/mobility">🚗 Mobility</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/environment">🌿 Environment</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/health">🏥 Health</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/agriculture">🌾 Agriculture</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Agriculture Module -->
+    <div class="container mt-5">
+        <!-- Header -->
+        <div class="module-header rounded">
+            <h1 class="module-title">🌾 Agriculture & Food Supply Monitoring</h1>
+            <p class="module-subtitle">Crop yield analytics, water efficiency, and food supply stability for sustainable
+                urban agriculture</p>
+            <div class="row mt-4">
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <h3 id="crop-yield-index">--</h3>
+                        <small>Crop Yield Index</small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <h3 id="food-stability">--%</h3>
+                        <small>Food Supply Stability</small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <h3 id="water-efficiency">--%</h3>
+                        <small>Water Usage Efficiency</small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <h3 id="local-production">--%</h3>
+                        <small>Local Food Production</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPIs -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="kpi-card">
+                    <h5>Crop Yield Index</h5>
+                    <div class="kpi-value" id="crop-yield">--</div>
+                    <div id="yield-status">Loading...</div>
+                    <p class="kpi-label">Agricultural Productivity</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="kpi-card">
+                    <h5>Food Supply Stability</h5>
+                    <div class="kpi-value" id="food-supply">--%</div>
+                    <div id="supply-status">Loading...</div>
+                    <p class="kpi-label">Supply Chain Reliability</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="kpi-card">
+                    <h5>Water Efficiency</h5>
+                    <div class="kpi-value" id="water-usage">--%</div>
+                    <div id="water-status">Loading...</div>
+                    <p class="kpi-label">Irrigation Efficiency</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="kpi-card">
+                    <h5>Local Food %</h5>
+                    <div class="kpi-value" id="local-food">--%</div>
+                    <div id="local-status">Loading...</div>
+                    <p class="kpi-label">Locally Sourced Food</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts and Analytics -->
+        <div class="row mb-4">
+            <div class="col-md-7">
+                <div class="dashboard-card card">
+                    <div class="card-header">
+                        📊 Agricultural Performance Trends
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="agricultureChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="dashboard-card card">
+                    <div class="card-header">
+                        💧 Water Usage Distribution
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="waterChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Crop Monitoring -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="dashboard-card card">
+                    <div class="card-header">
+                        🌽 Crop Performance & Food Security
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5>Crop Performance Metrics</h5>
+                                <div id="cropPerformance">
+                                    <div class="spinner-container">
+                                        <div class="spinner-border text-warning" role="status">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <h6>Smart Agriculture Features</h6>
+                                    <div id="smartFeatures" class="list-group list-group-flush">
+                                        <!-- Will be populated by JavaScript -->
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>Food Supply Chain Status</h5>
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between">
+                                        <span>🍚 Grains Supply</span>
+                                        <span class="badge bg-success" id="grains-supply">-- days</span>
+                                    </div>
+                                    <div class="crop-yield">
+                                        <div class="yield-progress" id="grains-bar"></div>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between">
+                                        <span>🥦 Vegetables Supply</span>
+                                        <span class="badge bg-info" id="vegetables-supply">-- days</span>
+                                    </div>
+                                    <div class="crop-yield">
+                                        <div class="yield-progress" id="vegetables-bar"></div>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between">
+                                        <span>🍎 Fruits Supply</span>
+                                        <span class="badge bg-warning" id="fruits-supply">-- days</span>
+                                    </div>
+                                    <div class="crop-yield">
+                                        <div class="yield-progress" id="fruits-bar"></div>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between">
+                                        <span>🥛 Dairy Supply</span>
+                                        <span class="badge bg-primary" id="dairy-supply">-- days</span>
+                                    </div>
+                                    <div class="crop-yield">
+                                        <div class="yield-progress" id="dairy-bar"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Agriculture Data Table -->
+        <div class="row">
+            <div class="col-12">
+                <div class="dashboard-card card">
+                    <div class="card-header">
+                        📋 Agricultural Monitoring Data
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Agricultural Metric</th>
+                                        <th>Current Value</th>
+                                        <th>Seasonal Trend</th>
+                                        <th>Impact of Rainfall</th>
+                                        <th>Water Dependency</th>
+                                        <th>Recommendation</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="agricultureDataTable">
+                                    <tr>
+                                        <td colspan="6" class="text-center">Loading agricultural data...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Agriculture Alerts -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="dashboard-card card">
+                    <div class="card-header">
+                        🚨 Agriculture & Food Security Alerts
+                    </div>
+                    <div class="card-body">
+                        <div id="agricultureAlerts">
+                            <div class="alert alert-info">
+                                <strong>Agricultural Monitoring Active:</strong> All farming and food supply systems are
+                                operational.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="js/auth.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/agriculture.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,9 @@
+{
+    "admin@smartcity.com": {
+        "password": "admin",
+        "role": "official",
+        "name": "System Admin",
+        "profilePic": "👨‍💼",
+        "area": "Downtown"
+    }
+}

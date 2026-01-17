@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings | Smart City Dashboard</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* ... existing styles ... */
+        .avatar-option {
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .avatar-option:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .avatar-option.selected {
+            border-color: #0ea5e9;
+            background: rgba(14, 165, 233, 0.2);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ... (Navbar matches existing) ... -->
+    <!-- ... (Sidebar matches existing) ... -->
+
+    <!-- Main Content (Partial View) -->
+    <div class="main-content">
+        <div class="tab-content">
+            <!-- Profile Tab -->
+            <div class="tab-pane fade show active" id="profile">
+                <h3 class="mb-4">Profile Settings</h3>
+
+                <!-- 1. Edit Details -->
+                <div class="dashboard-card card mb-4">
+                    <div class="card-header bg-transparent border-secondary text-white fw-bold">
+                        👤 Personal Details
+                    </div>
+                    <div class="card-body">
+                        <form id="profile-form">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Full Name</label>
+                                    <input type="text" class="form-control" id="profile-name">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Email Address (ID)</label>
+                                    <input type="email" class="form-control" id="profile-email" readonly
+                                        style="opacity: 0.7; cursor: not-allowed;">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Phone Number</label>
+                                    <input type="tel" class="form-control" id="profile-phone"
+                                        placeholder="+1 234 567 8900">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Residential Area</label>
+                                    <select class="form-select bg-dark text-white border-secondary" id="profile-area">
+                                        <option value="Downtown">Downtown</option>
+                                        <option value="Suburbs">Suburbs</option>
+                                        <option value="Industrial Dist">Industrial District</option>
+                                        <option value="Green Zone">Green Zone</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Gender</label>
+                                    <select class="form-select bg-dark text-white border-secondary" id="profile-gender">
+                                        <option value="">Select Gender...</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Non-binary">Non-binary</option>
+                                        <option value="Prefer not to say">Prefer not to say</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Date of Birth</label>
+                                    <input type="date" class="form-control" id="profile-dob">
+                                </div>
+
+                                <!-- New Avatar Selector -->
+                                <div class="col-12">
+                                    <label class="form-label mb-2">Select Avatar</label>
+                                    <div class="d-flex gap-3 flex-wrap" id="avatar-container">
+                                        <div class="avatar-option" onclick="selectAvatar('👨‍💼')">👨‍💼</div>
+                                        <div class="avatar-option" onclick="selectAvatar('👩‍💼')">👩‍💼</div>
+                                        <div class="avatar-option" onclick="selectAvatar('👷')">👷</div>
+                                        <div class="avatar-option" onclick="selectAvatar('🧑‍⚕️')">🧑‍⚕️</div>
+                                        <div class="avatar-option" onclick="selectAvatar('🕵️')">🕵️</div>
+                                        <div class="avatar-option" onclick="selectAvatar('👤')">👤</div>
+                                        <div class="avatar-option" onclick="selectAvatar('🚴')">🚴</div>
+                                        <div class="avatar-option" onclick="selectAvatar('🏡')">🏡</div>
+                                    </div>
+                                    <input type="hidden" id="profile-pic" value="👤">
+                                </div>
+
+                                <div class="col-12 text-end mt-4">
+                                    <button type="button" class="btn btn-primary" onclick="saveProfile()">Save
+                                        Details</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- 2. Security Settings -->
+                <div class="dashboard-card card border-warning">
+                    <div class="card-header bg-transparent border-warning text-warning fw-bold">
+                        🔒 Security & Password
+                    </div>
+                    <div class="card-body">
+                        <form id="password-form">
+                            <div class="row g-3 align-items-end">
+                                <div class="col-md-4">
+                                    <label class="form-label">Current Password</label>
+                                    <input type="password" class="form-control" id="sec-current-password"
+                                        placeholder="Required for changes">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">New Password</label>
+                                    <input type="password" class="form-control" id="sec-new-password"
+                                        placeholder="Min 6 characters">
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="button" class="btn btn-outline-warning w-100"
+                                        onclick="changePassword()">Update Password</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Privacy Tab -->
+            <div class="tab-pane fade" id="privacy">
+                <h3 class="mb-4">Privacy & Data</h3>
+                <div class="dashboard-card card mb-4">
+                    <div class="card-body">
+                        <h5 class="text-info">Info Control</h5>
+                        <p class="text-muted small">Manage how your data is stored and shared.</p>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span>Share Anonymized Usage Data</span>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" checked>
+                            </div>
+                        </div>
+                        <button class="btn btn-outline-light btn-sm" onclick="alert('Data Exported to CSV')">Export
+                            My Data</button>
+                    </div>
+                </div>
+                <div class="dashboard-card card border-danger">
+                    <div class="card-body">
+                        <h5 class="text-danger">Danger Zone</h5>
+                        <button class="btn btn-outline-danger btn-sm"
+                            onclick="alert('Account deletion request sent to admin.')">Delete Account</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Help & Feedback -->
+            <div class="tab-pane fade" id="help">
+                <h3 class="mb-4">Help & Feedback</h3>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="dashboard-card card h-100">
+                            <div class="card-body">
+                                <h5>Send Feedback</h5>
+                                <p class="text-muted small">Report a bug or suggest a feature.</p>
+                                <div class="mb-3">
+                                    <select class="form-select bg-dark text-white border-secondary mb-2"
+                                        id="feedback-type">
+                                        <option value="Bug">Report Bug</option>
+                                        <option value="Feature">Suggest Feature</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                    <textarea class="form-control" id="feedback-msg" rows="4"
+                                        placeholder="Describe your issue..."></textarea>
+                                </div>
+                                <button class="btn btn-primary w-100" onclick="sendFeedback()">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="dashboard-card card h-100">
+                            <div class="card-body">
+                                <h5 class="text-success">Contact Web Handler</h5>
+                                <p class="text-muted small">Direct contact for technical or administrative issues.
+                                </p>
+
+                                <h6 class="mt-4 text-white">📧 Official Email IDs</h6>
+                                <ul class="list-unstyled text-info small">
+                                    <li class="mb-1">admin@smartcity.com (Main)</li>
+                                    <li class="mb-1">support@smartcity.com (Tech)</li>
+                                    <li>compliance@smartcity.com (Legal)</li>
+                                </ul>
+
+                                <h6 class="mt-4 text-white">📞 Official Phone Numbers</h6>
+                                <ul class="list-unstyled text-info small">
+                                    <li class="mb-1">+1 (800) CITY-HEL</li>
+                                    <li>+1 (555) 012-3456 (Emergency IT)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preferences Tab -->
+            <div class="tab-pane fade" id="preferences">
+                <h3 class="mb-4">Preferences</h3>
+                <div class="dashboard-card card">
+                    <div class="card-body">
+                        <div class="list-group list-group-flush">
+                            <div
+                                class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white border-bottom border-secondary">
+                                <div>
+                                    <h6 class="mb-0">Email Notifications</h6>
+                                    <small class="text-secondary">Receive weekly summaries</small>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" checked>
+                                </div>
+                            </div>
+                            <div
+                                class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white border-0">
+                                <div>
+                                    <h6 class="mb-0">Compact Mode</h6>
+                                    <small class="text-secondary">Reduce whitespace in dashboard</small>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Management (Official) -->
+            <div class="tab-pane fade" id="team">
+                <h3 class="mb-4 text-warning">Manage Team</h3>
+                <div class="dashboard-card card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Add New Official</h5>
+                        <div class="input-group mb-3">
+                            <input type="email" id="new-official-email" class="form-control"
+                                placeholder="colleague@smartcity.com">
+                            <button class="btn btn-outline-warning" type="button"
+                                onclick="handleAddOfficial()">Whiteliste Email</button>
+                        </div>
+                        <div class="alert alert-info py-2">
+                            <small>Whitelisted emails can create an 'Official' account upon login.</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Audit Logs (Official) -->
+            <div class="tab-pane fade" id="audit">
+                <h3 class="mb-4 text-warning">System Audit</h3>
+                <div class="dashboard-card card">
+                    <div class="card-body">
+                        <table class="table table-dark table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>User</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="audit-table-body">
+                                <!-- Dynamic Content -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Activity (Citizen) -->
+            <div class="tab-pane fade" id="activity">
+                <h3 class="mb-4 text-info">Recent Activity</h3>
+                <div class="dashboard-card card">
+                    <div class="card-body">
+                        <ul class="list-group bg-transparent" id="activity-list">
+                            <!-- Dynamic Content -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    </div>
+
+    <!-- Auth Logic -->
+    <script src="js/auth.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!checkAuth()) return;
+
+            const name = localStorage.getItem('userName') || 'User';
+            const role = localStorage.getItem('userRole');
+            const email = localStorage.getItem('userEmail') || 'No Email';
+            const area = localStorage.getItem('userArea') || 'Downtown';
+            const pic = localStorage.getItem('userPic') || '👤';
+            const phone = localStorage.getItem('userPhone') || '';
+            const gender = localStorage.getItem('userGender') || '';
+            const dob = localStorage.getItem('userDOB') || '';
+
+            // Sidebar Info
+            document.getElementById('display-name').textContent = name;
+            document.getElementById('display-email').textContent = email;
+            document.getElementById('user-avatar-small').textContent = pic;
+
+            // Top Badge
+            const badge = document.getElementById('top-role-badge');
+            badge.textContent = role.toUpperCase();
+            badge.className = role === 'official' ? 'badge bg-warning me-3' : 'badge bg-info me-3';
+
+            // Profile Tab Inputs
+            document.getElementById('profile-name').value = name;
+            document.getElementById('profile-email').value = email;
+            document.getElementById('profile-area').value = area;
+            document.getElementById('profile-pic').value = pic;
+            document.getElementById('profile-phone').value = phone;
+            document.getElementById('profile-gender').value = gender;
+            document.getElementById('profile-dob').value = dob;
+
+            // Initialize Avatar Selection
+            selectAvatar(pic);
+
+            // Role Menu Visibility
+            if (role === 'official') {
+                document.getElementById('official-menu').style.display = 'block';
+                fetchLogs('official');
+            } else {
+                document.getElementById('citizen-menu').style.display = 'block';
+                fetchLogs('citizen');
+            }
+        });
+
+        function selectAvatar(emoji) {
+            document.getElementById('profile-pic').value = emoji;
+            const options = document.querySelectorAll('.avatar-option');
+            options.forEach(opt => {
+                if (opt.textContent.trim() === emoji) {
+                    opt.classList.add('selected');
+                } else {
+                    opt.classList.remove('selected');
+                }
+            });
+        }
+
+        async function saveProfile() {
+            const email = document.getElementById('profile-email').value;
+            const name = document.getElementById('profile-name').value;
+            const area = document.getElementById('profile-area').value;
+            const pic = document.getElementById('profile-pic').value;
+            const phone = document.getElementById('profile-phone').value;
+            const gender = document.getElementById('profile-gender').value;
+            const dob = document.getElementById('profile-dob').value;
+
+            const res = await updateUserProfile({
+                email, name, area, profilePic: pic, phoneNumber: phone, gender, dob
+            });
+
+            if (res.success) {
+                alert('Profile Updated Successfully!');
+                location.reload();
+            } else {
+                if (res.message === 'User not found') {
+                    alert('Session expired or invalid. Please login again.');
+                    logout();
+                } else {
+                    alert('Update failed: ' + res.message);
+                }
+            }
+        }
+
+        async function changePassword() {
+            const email = localStorage.getItem('userEmail');
+            const currentPassword = document.getElementById('sec-current-password').value;
+            const newPassword = document.getElementById('sec-new-password').value;
+
+            if (!currentPassword || !newPassword) {
+                return alert('Please fill in all password fields.');
+            }
+
+            if (newPassword.length < 6) {
+                return alert('New password must be at least 6 characters.');
+            }
+
+            const res = await updateUserProfile({
+                email,
+                password: newPassword,
+                currentPassword: currentPassword
+            });
+
+            if (res.success) {
+                alert('Password Updated Successfully!');
+                document.getElementById('password-form').reset();
+            } else {
+                alert('Password Update Failed: ' + res.message);
+            }
+        }
+
+        async function sendFeedback() {
+            const email = localStorage.getItem('userEmail');
+            const type = document.getElementById('feedback-type').value;
+            const msg = document.getElementById('feedback-msg').value;
+
+            if (!msg) return alert('Please enter a message');
+
+            const res = await submitUserFeedback({ email, type, message: msg });
+            if (res.success) {
+                alert('Feedback Sent! We appreciate your input.');
+                document.getElementById('feedback-msg').value = '';
+            }
+        }
+
+        async function fetchLogs(role) {
+            try {
+                const email = localStorage.getItem('userEmail');
+                const res = await fetch('/api/logs', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, role })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    if (role === 'official') {
+                        const tbody = document.getElementById('audit-table-body');
+                        tbody.innerHTML = data.logs.length ? data.logs.map(log => `
+                            <tr>
+                                <td>${log.timestamp}</td>
+                                <td>${log.user}</td>
+                                <td>${log.action}</td>
+                            </tr>
+                        `).join('') : '<tr><td colspan="3" class="text-center text-muted">No logs available</td></tr>';
+                    } else {
+                        const list = document.getElementById('activity-list');
+                        list.innerHTML = data.logs.length ? data.logs.map(log => `
+                            <li class="list-group-item bg-transparent text-white border-secondary">
+                                <span class="text-info">[${log.timestamp}]</span> ${log.action}
+                            </li>
+                        `).join('') : '<li class="list-group-item bg-transparent text-muted">No recent activity.</li>';
+                    }
+                }
+            } catch (err) {
+                console.error('Failed to fetch logs', err);
+            }
+        }
+
+        function handleAddOfficial() {
+            const email = document.getElementById('new-official-email').value;
+            if (!email) {
+                alert('Enter email'); return;
+            }
+            addOfficialEmail(email);
+        }
+    </script>
+</body>
+
+</html>
